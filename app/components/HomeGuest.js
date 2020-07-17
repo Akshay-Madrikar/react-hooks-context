@@ -15,7 +15,7 @@ const HomeGuest = () => {
 
     const registerUser = async() => {
       try {
-        await Axios.post("http://localhost:5000/register", {
+        await Axios.post("/register", {
           username,
           email,
           password

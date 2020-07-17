@@ -13,12 +13,14 @@ const HeaderLoggedOut = (props) => {
   
       const login = async() => {
         try {
-          const user = await Axios.post("http://localhost:5000/login", {
+          const user = await Axios.post("/login", {
             username,
             password
           });
           if(user) {
-            console.log('Successful Login!', user.data);
+              if(typeof window !== 'undefined') {
+                localStorage.setItem('data', JSON.stringify(user.data));
+              }
             props.setLoggedIn(true);
           } else {
             console.log('Incorrect username or password');
