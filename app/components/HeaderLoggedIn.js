@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useContext, useCallback } from 'react';
 import { Link } from 'react-router-dom';
+
+import DispatchContext from '../DispatchContext';
 
 const HeaderLoggedIn = (props) => {
 
+    const appDispatch = useContext(DispatchContext);
+
     const handleLogout = (e) => {
-        props.setLoggedIn(false);
+        appDispatch({
+            type: 'LOGOUT'
+        });
         localStorage.removeItem('data');
     };
 

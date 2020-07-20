@@ -1,8 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import Axios from 'axios';
 
+import DispatchContext from '../DispatchContext';
 
 const HeaderLoggedOut = (props) => {
+
+    const appDispatch = useContext(DispatchContext);
 
     const [credentials, setCredentials] = useState({
         username: '',
@@ -18,10 +21,12 @@ const HeaderLoggedOut = (props) => {
             password
           });
           if(user) {
-              if(typeof window !== 'undefined') {
-                localStorage.setItem('data', JSON.stringify(user.data));
-              }
-            props.setLoggedIn(true);
+            if(typeof window !== 'undefined') {
+              localStorage.setItem('data', JSON.stringify(user.data));
+            }
+            appDispatch({
+              type: 'LOGIN'
+            });
           } else {
             console.log('Incorrect username or password');
           }

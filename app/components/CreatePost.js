@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Axios from 'axios';
 import { withRouter } from 'react-router-dom';
 
 import Page from './Page';
+import DispatchContext from '../DispatchContext';
 
 const CreatePost = (props) => {
 
@@ -10,6 +11,8 @@ const CreatePost = (props) => {
         title: '',
         body: ''
     });
+
+    const appDispatch = useContext(DispatchContext)
 
     const { title, body } = values;
     const { avatar, token, username } = JSON.parse(localStorage.getItem('data'));
@@ -21,7 +24,10 @@ const CreatePost = (props) => {
                 body,
                 token: token
             });
-            props.addFlashMessage('Successfully created your post!');
+            appDispatch({
+                type: 'FLASH_MESSAGE',
+                value: 'Successfully created your post!!!'
+            });
             props.history.push(`/post/${post.data}`);
             console.log('Post created!'); 
         } catch(error) {
