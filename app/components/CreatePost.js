@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 
 import Page from './Page';
 import DispatchContext from '../DispatchContext';
+import StateContext from '../StateContext';
 
 const CreatePost = (props) => {
 
@@ -12,17 +13,18 @@ const CreatePost = (props) => {
         body: ''
     });
 
-    const appDispatch = useContext(DispatchContext)
+    const appDispatch = useContext(DispatchContext);
+    const appState = useContext(StateContext);
 
     const { title, body } = values;
-    const { avatar, token, username } = JSON.parse(localStorage.getItem('data'));
+    //const { avatar, token, username } = JSON.parse(localStorage.getItem('data'));
 
     const createPost = async () => {
         try {
             const post = await Axios.post('/create-post', {
                 title,
                 body,
-                token: token
+                token: appState.user.token
             });
             appDispatch({
                 type: 'FLASH_MESSAGE',

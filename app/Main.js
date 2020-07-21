@@ -1,4 +1,5 @@
-import React, { useState, useReducer } from 'react'
+import React, { useState, useReducer, useEffect } from 'react'
+import { useImmerReducer } from 'use-immer'
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Axios from 'axios';
@@ -17,33 +18,64 @@ import DispatchContext from './DispatchContext';
 import StateContext from './StateContext';
 
 function Main() {
+  //const { avatar, token, username } = JSON.parse(localStorage.getItem('data'));
 
     const INTAIL_STATE = {
       loggedIn: Boolean(localStorage.getItem('data')),
-      flashMessages: []
-    };
-
-    const ourReducer = ( state, action ) => {
-      switch(action.type) {
-        case 'LOGIN':
-          return { 
-            loggedIn: true,
-            flashMessages: state.flashMessages 
-          }
-        case 'LOGOUT':
-          return { 
-            loggedIn: false,
-            flashMessages: state.flashMessages 
-          }
-        case 'FLASH_MESSAGE':
-          return { 
-            loggedIn: state.loggedIn,
-            flashMessages: state.flashMessages.concat(action.value) 
-          }
+      flashMessages: [],
+      user: {
+        token: '',
+        username: '',
+        avatar: ''
       }
     };
 
-    const [ state, dispatch ] = useReducer(ourReducer, INTAIL_STATE);
+    // const ourReducer = ( state, action ) => {
+    //   switch(action.type) {
+    //     case 'LOGIN':
+    //       return { 
+    //         loggedIn: true,
+    //         flashMessages: state.flashMessages 
+    //       }
+    //     case 'LOGOUT':
+    //       return { 
+    //         loggedIn: false,
+    //         flashMessages: state.flashMessages 
+    //       }
+    //     case 'FLASH_MESSAGE':
+    //       return { 
+    //         loggedIn: state.loggedIn,
+    //         flashMessages: state.flashMessages.concat(action.value) 
+    //       }
+    //   }
+    // };
+
+    //------ Immer way of writing reducers -------------
+    const ourReducer = ( draft, action ) => {
+      switch(action.type) {
+        case 'LOGIN':
+          draft.loggedIn = true;
+          draft.user = action.payload
+          return
+        case 'LOGOUT':
+          draft.loggedIn = false
+          return
+        case 'FLASH_MESSAGE':
+          draft.flashMessages.push(action.value)
+          return
+      }
+    };
+
+    //const [ state, dispatch ] = useReducer(ourReducer, INTAIL_STATE);
+    const [ state, dispatch ] = useImmerReducer(ourReducer, INTAIL_STATE); // using to have existing state of the app
+
+    useEffect(() => {
+      if (state.loggedIn) {
+        localStorage.setItem('data', JSON.stringify(state.user));
+      } else {
+        localStorage.removeItem('data');
+      }
+    }, [state.loggedIn]);
 
     return (
     <StateContext.Provider value={state}>

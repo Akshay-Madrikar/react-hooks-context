@@ -21,11 +21,12 @@ const HeaderLoggedOut = (props) => {
             password
           });
           if(user) {
-            if(typeof window !== 'undefined') {
-              localStorage.setItem('data', JSON.stringify(user.data));
-            }
+            // if(typeof window !== 'undefined') {
+            //   localStorage.setItem('data', JSON.stringify(user.data));
+            // }
             appDispatch({
-              type: 'LOGIN'
+              type: 'LOGIN',
+              payload: user.data
             });
           } else {
             console.log('Incorrect username or password');
